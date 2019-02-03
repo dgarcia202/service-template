@@ -10,8 +10,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-var fileHandler *os.File
-
 // SetupLogger configure logrus default logger according to loaded configuration
 func SetupLogger() {
 	log.SetFormatter(&log.TextFormatter{})
@@ -37,26 +35,21 @@ func SetupLogger() {
 func ApplicationFileLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		/*path := c.Request.URL.Path
-		raw := c.Request.URL.RawQuery*/
+		path := c.Request.URL.Path
+		raw := c.Request.URL.RawQuery
 		c.Next()
 
-		//if fileHandler != nil { // Will not log to console since gin is alrady doing it
-		/*clientIP := c.ClientIP()
+		clientIP := c.ClientIP()
 		method := c.Request.Method
-		statusCode := c.Writer.Status()*/
+		statusCode := c.Writer.Status()
 		comment := c.Errors.ByType(gin.ErrorTypePrivate).String()
-		log.Debug(comment)
 
-		/*log.WithFields(log.Fields{
+		log.WithFields(log.Fields{
 			"path":   path,
 			"raw":    raw,
 			"ip":     clientIP,
 			"method": method,
 			"status": statusCode,
-		}).Debug(comment)*/
-		//} else {
-		//	log.Warn("Not logging to a file")
-		//}
+		}).Debug(comment)
 	}
 }
