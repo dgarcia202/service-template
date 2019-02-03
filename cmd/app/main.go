@@ -5,11 +5,19 @@ import (
 
 	"github.com/dgarcia202/service-template/pkg/app"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
 func setupRoutes(r *gin.Engine) {
 	r.GET("/hola", func(c *gin.Context) {
+
+		log.Trace("This is a trace")
+		log.Debug("This is a dbg")
+		log.Info("This is a test")
+		log.Warn("This is a warning")
+		log.Error("This is a error")
+
 		c.String(http.StatusOK, "adios")
 	})
 }

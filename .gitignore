@@ -1,3 +1,4 @@
 vendor/**
 !vendor.json
 build
+**/*.log

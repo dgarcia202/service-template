@@ -19,5 +19,4 @@ func init() {
 	viper.BindPFlag("address", serveCmd.Flags().Lookup("address"))
 	viper.SetDefault("port", defaultPort)
 	viper.SetDefault("address", defaultInterface)
-
 }
