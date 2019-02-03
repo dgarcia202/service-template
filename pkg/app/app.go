@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/dgarcia202/service-template/internal/cmd"
+	"github.com/dgarcia202/service-template/internal/logging"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -24,6 +25,8 @@ var defaultApp App
 
 var serveHandler = func(cmd *cobra.Command, args []string) {
 	r := defaultApp.ginEngine
+
+	logging.SetupLogger()
 
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")

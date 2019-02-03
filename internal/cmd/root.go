@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dgarcia202/service-template/internal/logging"
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -70,7 +69,6 @@ func initConfig() {
 	}
 
 	viper.SetDefault("logfile", fmt.Sprintf("./%s.log", rootCmd.Use))
-	logging.SetupLogger()
 
 	// Don't forget to read config either from cfgFile or from home directory!
 	if cfgFile != "" {

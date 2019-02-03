@@ -22,10 +22,10 @@ func SetupLogger() {
 
 	lvl, err := log.ParseLevel(viper.GetString("loglevel"))
 	if err != nil {
-		log.Error("Couldn't parse error level", viper.GetString("loglevel"), "using default level (INFO)")
+		log.Error("Couldn't parse error level ", viper.GetString("loglevel"), " using default level (INFO)")
 		log.SetLevel(log.InfoLevel)
 	} else {
-		log.Debug("Loglevel is set to", strings.ToUpper(viper.GetString("loglevel")))
+		log.Debug("Loglevel is set to ", strings.ToUpper(lvl.String()))
 		log.SetLevel(lvl)
 	}
 }
