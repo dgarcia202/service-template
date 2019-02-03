@@ -3,6 +3,7 @@ package logging
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -19,5 +20,12 @@ func SetupLogger() {
 		log.Error(fmt.Sprintf("Failed to log to file, using default stderr (%s)", err))
 	}
 
-	log.SetLevel(log.InfoLevel)
+	lvl, err := log.ParseLevel(viper.GetString("loglevel"))
+	if err != nil {
+		log.Error("Couldn't parse error level", viper.GetString("loglevel"), "using default level (INFO)")
+		log.SetLevel(log.InfoLevel)
+	} else {
+		log.Debug("Loglevel is set to", strings.ToUpper(viper.GetString("loglevel")))
+		log.SetLevel(lvl)
+	}
 }
