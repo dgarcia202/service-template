@@ -37,6 +37,7 @@ var serveHandler = func(cmd *cobra.Command, args []string) {
 
 func init() {
 	defaultApp.ginEngine = gin.Default()
+	// defaultApp.ginEngine.Use(logging.ApplicationFileLogger())
 }
 
 // Instance returns a pointer to the created app
