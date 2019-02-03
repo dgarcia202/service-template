@@ -16,7 +16,7 @@ var usingFileSystem = false
 func SetupLogger() {
 	log.SetFormatter(&log.TextFormatter{})
 
-	fileHandler, err := os.OpenFile(viper.GetString("logfile"), os.O_CREATE|os.O_WRONLY, 0666)
+	fileHandler, err := os.OpenFile(viper.GetString("logfile"), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if err == nil {
 		log.SetOutput(fileHandler)
 		usingFileSystem = true

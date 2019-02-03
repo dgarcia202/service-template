@@ -3,6 +3,14 @@
 	"ignore": "test",
 	"package": [
 		{
+			"path": "-u",
+			"revision": ""
+		},
+		{
+			"path": "get",
+			"revision": ""
+		},
+		{
 			"checksumSHA1": "7NP1qUMF8Kx1y0zANxx0e+oq9Oo=",
 			"path": "github.com/fsnotify/fsnotify",
 			"revision": "ccc981bf80385c528a65fbfdd49bf2d8da22aa23",
@@ -117,6 +125,18 @@
 			"path": "github.com/inconshreveable/mousetrap",
 			"revision": "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75",
 			"revisionTime": "2014-10-17T20:07:13Z"
+		},
+		{
+			"checksumSHA1": "lt5bm512Xe/DCnDb61pueSy8dQQ=",
+			"path": "github.com/jinzhu/gorm",
+			"revision": "9f1a7f53511168c0567b4b4b4f10ab7d21265174",
+			"revisionTime": "2019-01-02T13:32:08Z"
+		},
+		{
+			"checksumSHA1": "4eelJOSLZoDzLuaJvgilOBVNovU=",
+			"path": "github.com/jinzhu/inflection",
+			"revision": "04140366298a54a039076d798123ffa108fff46c",
+			"revisionTime": "2018-03-08T03:36:59Z"
 		},
 		{
 			"checksumSHA1": "Ah2HsEkTM0gBO7XNPmjtM8MAvKE=",
@@ -237,6 +257,10 @@
 			"path": "github.com/ugorji/go/codec",
 			"revision": "ee1426cffec05e61aaf15dad53bac697c48546ed",
 			"revisionTime": "2019-01-28T21:31:24Z"
+		},
+		{
+			"path": "go",
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "CVmt+DETeuUZkKC6MUJbTqc/iYU=",

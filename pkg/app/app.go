@@ -3,10 +3,13 @@ package app
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"os/signal"
 
 	"github.com/dgarcia202/service-template/internal/cmd"
 	"github.com/dgarcia202/service-template/internal/logging"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -32,6 +35,7 @@ var serveHandler = func(cmd *cobra.Command, args []string) {
 		c.String(http.StatusOK, "pong")
 	})
 
+	log.Info("Starting service...")
 	r.Run(fmt.Sprintf("%s:%s", viper.GetString("address"), viper.GetString("port")))
 }
 
@@ -47,6 +51,19 @@ func Instance() *App {
 
 // Run runs the app either bringing up the service or other action like showing version number
 func (a App) Run() {
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		for sig := range c {
+			if sig.String() == "interrupt" {
+				fmt.Println()
+				log.Info("Shutting down service...")
+				os.Exit(0)
+			}
+		}
+	}()
+
 	info := cmd.ServiceInfo{Name: a.ServiceName, Short: a.ShortDescription, Long: a.LongDescription, Version: a.Version}
 	cmd.Execute(&info, serveHandler)
 }
@@ -54,4 +71,9 @@ func (a App) Run() {
 // SetupRoutes allows to modify routing configuration
 func (a App) SetupRoutes(fn func(*gin.Engine)) {
 	fn(a.ginEngine)
+}
+
+// Shutdown releases resources on application shutdown
+func (a App) Shutdown() {
+	// Perform clean up
 }

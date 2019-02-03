@@ -10,13 +10,6 @@ import (
 
 func setupRoutes(r *gin.Engine) {
 	r.GET("/hola", func(c *gin.Context) {
-
-		/*log.Trace("This is a trace")
-		log.Debug("This is a dbg")
-		log.Info("This is a test")
-		log.Warn("This is a warning")
-		log.Error("This is a error")*/
-
 		c.String(http.StatusOK, "adios")
 	})
 }
