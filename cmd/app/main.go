@@ -1,6 +1,17 @@
 package main
 
-import "github.com/dgarcia202/service-template/pkg/app"
+import (
+	"net/http"
+
+	"github.com/dgarcia202/service-template/pkg/app"
+	"github.com/gin-gonic/gin"
+)
+
+func setupRoutes(r *gin.Engine) {
+	r.GET("/hola", func(c *gin.Context) {
+		c.String(http.StatusOK, "adios")
+	})
+}
 
 func main() {
 	app := app.Instance()
@@ -11,6 +22,14 @@ func main() {
 		for educational purposes`
 
 	app.Version = "0.0.1"
+
+	app.SetupRoutes(setupRoutes)
+
+	app.SetupRoutes(func(r *gin.Engine) {
+		r.GET("/second", func(c *gin.Context) {
+			c.String(http.StatusOK, "route")
+		})
+	})
 
 	app.Run()
 }

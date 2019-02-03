@@ -46,3 +46,8 @@ func (a App) Run() {
 	info := cmd.ServiceInfo{Name: a.ServiceName, Short: a.ShortDescription, Long: a.LongDescription, Version: a.Version}
 	cmd.Execute(&info, serveHandler)
 }
+
+// SetupRoutes allows to modify routing configuration
+func (a App) SetupRoutes(fn func(*gin.Engine)) {
+	fn(a.ginEngine)
+}
