@@ -9,6 +9,12 @@ import (
 	"github.com/spf13/viper"
 )
 
+const (
+	defaultPort      = "8080"
+	defaultInterface = "0.0.0.0"
+	defaultLogLevel  = "INFO"
+)
+
 // ServiceInfo holds basic service info for the root command
 type ServiceInfo struct {
 	Name, Short, Long, Version string
@@ -44,6 +50,14 @@ func Execute(info *ServiceInfo, serveHandler func(cmd *cobra.Command, args []str
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "")
+	rootCmd.PersistentFlags().String("logfile", "", "Log file with path for the service logging")
+	rootCmd.PersistentFlags().String("loglevel", "", `Log level may be TRACE, DEBUG, INFO, WARN, ERROR, FATAL, PANIC. 
+		Only will log lines of the equal or above severity`)
+
+	viper.BindPFlag("logfile", rootCmd.PersistentFlags().Lookup("logfile"))
+	viper.BindPFlag("loglevel", rootCmd.PersistentFlags().Lookup("loglevel"))
+	viper.SetDefault("logfile", fmt.Sprintf("./%s.log", rootCmd.Use))
+	viper.SetDefault("loglevel", defaultLogLevel)
 }
 
 func initConfig() {
@@ -53,6 +67,8 @@ func initConfig() {
 	if cfgFlag := rootCmd.PersistentFlags().Lookup("config"); cfgFlag != nil {
 		cfgFlag.Usage = fmt.Sprintf("config file (default is $HOME/.%s.yaml)", rootCmd.Use)
 	}
+
+	viper.SetDefault("logfile", fmt.Sprintf("./%s.log", rootCmd.Use))
 
 	// Don't forget to read config either from cfgFile or from home directory!
 	if cfgFile != "" {

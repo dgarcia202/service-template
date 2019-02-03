@@ -5,6 +5,7 @@ import (
 
 	"github.com/dgarcia202/service-template/pkg/app"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 func setupRoutes(r *gin.Engine) {
@@ -27,7 +28,7 @@ func main() {
 
 	app.SetupRoutes(func(r *gin.Engine) {
 		r.GET("/second", func(c *gin.Context) {
-			c.String(http.StatusOK, "route")
+			c.String(http.StatusOK, viper.GetString("loglevel"))
 		})
 	})
 

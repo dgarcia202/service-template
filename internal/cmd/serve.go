@@ -5,11 +5,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-const (
-	defaultPort      = "8080"
-	defaultInterface = "0.0.0.0"
-)
-
 var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "Starts API service",
@@ -24,4 +19,5 @@ func init() {
 	viper.BindPFlag("address", serveCmd.Flags().Lookup("address"))
 	viper.SetDefault("port", defaultPort)
 	viper.SetDefault("address", defaultInterface)
+
 }
