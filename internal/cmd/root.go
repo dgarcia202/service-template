@@ -41,6 +41,8 @@ func init() {
 
 func initConfig() {
 
+	viper.AutomaticEnv()
+
 	if cfgFlag := rootCmd.PersistentFlags().Lookup("config"); cfgFlag != nil {
 		cfgFlag.Usage = fmt.Sprintf("config file (default is $HOME/.%s.yaml)", rootCmd.Use)
 	}
