@@ -1,10 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -18,15 +14,6 @@ var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "Starts API service",
 	Long:  `Stars the service in a given interface/port and processes requests`,
-	Run: func(cmd *cobra.Command, args []string) {
-		r := gin.Default()
-
-		r.GET("/ping", func(c *gin.Context) {
-			c.String(http.StatusOK, "pong")
-		})
-
-		r.Run(fmt.Sprintf("%s:%s", viper.GetString("address"), viper.GetString("port")))
-	},
 }
 
 func init() {

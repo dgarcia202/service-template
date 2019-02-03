@@ -22,11 +22,18 @@ var rootCmd = &cobra.Command{
 }
 
 // Execute runs the root command logic
-func Execute(info *ServiceInfo) {
+func Execute(info *ServiceInfo, serveHandler func(cmd *cobra.Command, args []string)) {
 	rootCmd.Use = info.Name
 	rootCmd.Short = info.Short
 	rootCmd.Long = info.Long
 	rootCmd.Version = info.Version
+
+	for _, c := range rootCmd.Commands() {
+		if c.Use == "serve" {
+			c.Run = serveHandler
+			break
+		}
+	}
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
@@ -59,11 +66,9 @@ func initConfig() {
 			os.Exit(1)
 		}
 
-		// TODO: deal with the dynamic config file name
-
-		// Search config in home directory with name ".cobra" (without extension).
+		// Search config in home directory (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(fmt.Sprintf(".%s.yaml", rootCmd.Use))
+		viper.SetConfigName(fmt.Sprintf(".%s", rootCmd.Use))
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
