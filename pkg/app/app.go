@@ -21,27 +21,29 @@ type App struct {
 	LongDescription  string
 	Version          string
 
-	ginEngine *gin.Engine
+	ginEngine       *gin.Engine
+	routeSetupFuncs []func(*gin.Engine)
 }
 
 var defaultApp App
 
 var serveHandler = func(cmd *cobra.Command, args []string) {
-	r := defaultApp.ginEngine
 
 	logging.SetupLogger()
+	defaultApp.ginEngine = gin.Default()
+	defaultApp.ginEngine.Use(logging.ApplicationFileLogger())
 
+	for _, fn := range defaultApp.routeSetupFuncs {
+		fn(defaultApp.ginEngine)
+	}
+
+	r := defaultApp.ginEngine
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
 
 	log.Info("Starting service...")
 	r.Run(fmt.Sprintf("%s:%s", viper.GetString("address"), viper.GetString("port")))
-}
-
-func init() {
-	defaultApp.ginEngine = gin.Default()
-	defaultApp.ginEngine.Use(logging.ApplicationFileLogger())
 }
 
 // Instance returns a pointer to the created app
@@ -70,7 +72,7 @@ func (a App) Run() {
 
 // SetupRoutes allows to modify routing configuration
 func (a App) SetupRoutes(fn func(*gin.Engine)) {
-	fn(a.ginEngine)
+	a.routeSetupFuncs = append(a.routeSetupFuncs, fn)
 }
 
 // Shutdown releases resources on application shutdown
