@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"github.com/spf13/viper"
 )
 
 // Customer entity
@@ -18,7 +17,8 @@ type Customer struct {
 }
 
 func setupRoutes(r *gin.Engine) {
-	r.GET("/hola", func(c *gin.Context) {
+	r.GET("/customers", func(c *gin.Context) {
+		app.Db().Create(&Customer{Name: "Acme LTD.", LegalName: "TEXAS ACME INC. LTD."})
 		c.String(http.StatusOK, "adios")
 	})
 }
@@ -26,19 +26,11 @@ func setupRoutes(r *gin.Engine) {
 func main() {
 	app.ServiceName("customers")
 	app.ShortDescription("This is a dummy customers service")
-
 	app.LongDescription(`Customers service is an example micro service developed just
 		for educational purposes`)
 
 	app.Version("0.0.1")
-
-	app.SetupRoutes(setupRoutes)
-
-	app.SetupRoutes(func(r *gin.Engine) {
-		r.GET("/second", func(c *gin.Context) {
-			c.String(http.StatusOK, viper.GetString("loglevel"))
-		})
-	})
-
+	app.AddModel(&Customer{})
+	app.AddHTTPSetup(setupRoutes)
 	app.Run()
 }
