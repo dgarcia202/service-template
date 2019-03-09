@@ -7,4 +7,4 @@
 * Service discovery?
 * Centralized configuration?
 * Authentication?
-
+* RabbitMQ??

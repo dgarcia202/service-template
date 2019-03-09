@@ -16,10 +16,69 @@ type Customer struct {
 	LegalName string
 }
 
-func setupRoutes(r *gin.Engine) {
+type customerDto struct {
+	Name      string `json:"name"`
+	LegalName string `json:"legalName"`
+}
+
+func defineRoutes(r *gin.Engine) {
 	r.GET("/customers", func(c *gin.Context) {
-		app.Db().Create(&Customer{Name: "Acme LTD.", LegalName: "TEXAS ACME INC. LTD."})
-		c.String(http.StatusOK, "adios")
+		var customers []Customer
+		app.Db().Find(&customers)
+		c.JSON(http.StatusOK, customers)
+	})
+
+	r.GET("/customers/:id", func(c *gin.Context) {
+		var customer Customer
+		if app.Db().Where("ID = ?", c.Param("id")).First(&customer).RecordNotFound() {
+			c.AbortWithStatus(http.StatusNotFound)
+			return
+		}
+
+		c.JSON(http.StatusOK, customer)
+	})
+
+	r.POST("/customers", func(c *gin.Context) {
+		var json customerDto
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			return
+		}
+
+		customer := Customer{Name: json.Name, LegalName: json.LegalName}
+		app.Db().Create(&customer)
+		c.JSON(http.StatusCreated, customer)
+	})
+
+	r.PUT("/customers/:id", func(c *gin.Context) {
+		var json customerDto
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+			return
+		}
+
+		var customer Customer
+		if app.Db().Where("ID = ?", c.Param("id")).First(&customer).RecordNotFound() {
+			c.AbortWithStatus(http.StatusNotFound)
+			return
+		}
+
+		customer.Name = json.Name
+		customer.LegalName = json.LegalName
+		app.Db().Save(&customer)
+
+		c.JSON(http.StatusOK, customer)
+	})
+
+	r.DELETE("/customers/:id", func(c *gin.Context) {
+		var customer Customer
+		if app.Db().Where("ID = ?", c.Param("id")).First(&customer).RecordNotFound() {
+			c.AbortWithStatus(http.StatusNotFound)
+			return
+		}
+
+		app.Db().Delete(&customer)
+		c.Status(http.StatusOK)
 	})
 }
 
@@ -31,6 +90,6 @@ func main() {
 
 	app.Version("0.0.1")
 	app.AddModel(&Customer{})
-	app.AddHTTPSetup(setupRoutes)
+	app.AddHTTPSetup(defineRoutes)
 	app.Run()
 }
