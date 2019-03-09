@@ -11,7 +11,7 @@ func shutDown() {
 	fmt.Println()
 	log.Info("Shutting down service...")
 
-	err := defaultApp.db.Close()
+	err := std.db.Close()
 	if err != nil {
 		log.Error(err)
 	}

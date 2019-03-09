@@ -18,16 +18,16 @@ func startUp(cmd *cobra.Command, args []string) {
 	logging.SetupLogger()
 
 	log.Trace("Creating Gin engine")
-	defaultApp.ginEngine = gin.Default()
+	std.ginEngine = gin.Default()
 
 	log.Trace("Adding logging middleware")
-	defaultApp.ginEngine.Use(logging.ApplicationFileLogger())
+	std.ginEngine.Use(logging.ApplicationFileLogger())
 
 	log.Trace("Adding custom routes")
 	fnCount := 0
-	for _, fn := range defaultApp.routeSetupFuncs {
+	for _, fn := range std.routeSetupFuncs {
 		log.Trace("Executing 'SetupRoutes' function")
-		fn(defaultApp.ginEngine)
+		fn(std.ginEngine)
 		fnCount++
 	}
 	log.Trace(fnCount, " custom route functions processed")
@@ -37,9 +37,9 @@ func startUp(cmd *cobra.Command, args []string) {
 		log.Fatal("failed to connect database: ", err)
 	}
 
-	defaultApp.db = db
+	std.db = db
 
-	r := defaultApp.ginEngine
+	r := std.ginEngine
 	log.Trace("Adding default '/ping' route")
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")

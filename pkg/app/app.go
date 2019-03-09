@@ -11,10 +11,10 @@ import (
 
 // App represents the service
 type App struct {
-	ServiceName      string
-	ShortDescription string
-	LongDescription  string
-	Version          string
+	serviceName      string
+	shortDescription string
+	longDescription  string
+	version          string
 
 	ginEngine       *gin.Engine
 	routeSetupFuncs []func(*gin.Engine)
@@ -22,15 +22,10 @@ type App struct {
 	db *gorm.DB
 }
 
-var defaultApp App
+var std App
 
-// Instance returns a pointer to the created app
-func Instance() *App {
-	return &defaultApp
-}
-
-// Run runs the app either bringing up the service or other action like showing version number
-func (a *App) Run() {
+// runs the app either bringing up the service or other action like showing version number
+func (a *App) run() {
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
@@ -42,16 +37,16 @@ func (a *App) Run() {
 		}
 	}()
 
-	info := cmd.ServiceInfo{Name: a.ServiceName, Short: a.ShortDescription, Long: a.LongDescription, Version: a.Version}
+	info := cmd.ServiceInfo{Name: a.serviceName, Short: a.shortDescription, Long: a.longDescription, Version: a.version}
 	cmd.Execute(&info, startUp)
 }
 
-// SetupRoutes allows to modify routing configuration
-func (a *App) SetupRoutes(fn func(*gin.Engine)) {
+// setupRoutes allows to modify routing configuration
+func (a *App) setupRoutes(fn func(*gin.Engine)) {
 	a.routeSetupFuncs = append(a.routeSetupFuncs, fn)
 }
 
-// Shutdown releases resources on application shutdown
-func (a *App) Shutdown() {
+// shutdown releases resources on application shutdown
+func (a *App) shutdown() {
 	// Perform clean up
 }
