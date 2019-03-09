@@ -1,6 +1,8 @@
 package app
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 // ServiceName sets a short service name, avoid spaces
 func ServiceName(name string) {
@@ -22,9 +24,19 @@ func Version(version string) {
 	std.version = version
 }
 
-// SetupRoutes allows to modify routing configuration
-func SetupRoutes(fn func(*gin.Engine)) {
-	std.setupRoutes(fn)
+// AddHTTPSetup allows to modify HTTP server configuration
+func AddHTTPSetup(fn HTTPSetupFunc) {
+	std.addHTTPSetup(fn)
+}
+
+// AddModel sets an struct to be model for database migration
+func AddModel(value interface{}) {
+	std.addModel(value)
+}
+
+// Db returns the used instance of the GORM Db object
+func Db() *gorm.DB {
+	return std.db
 }
 
 // Run the app

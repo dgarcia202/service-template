@@ -9,6 +9,10 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+// HTTPSetupFunc is a function that is able to configure the web server in terms
+// of routes and middleware
+type HTTPSetupFunc func(*gin.Engine)
+
 // App represents the service
 type App struct {
 	serviceName      string
@@ -16,10 +20,11 @@ type App struct {
 	longDescription  string
 	version          string
 
-	ginEngine       *gin.Engine
-	routeSetupFuncs []func(*gin.Engine)
+	httpSetupFuncs []HTTPSetupFunc
+	models         []interface{}
 
-	db *gorm.DB
+	ginEngine *gin.Engine
+	db        *gorm.DB
 }
 
 var std App
@@ -42,8 +47,12 @@ func (a *App) run() {
 }
 
 // setupRoutes allows to modify routing configuration
-func (a *App) setupRoutes(fn func(*gin.Engine)) {
-	a.routeSetupFuncs = append(a.routeSetupFuncs, fn)
+func (a *App) addHTTPSetup(fn HTTPSetupFunc) {
+	a.httpSetupFuncs = append(a.httpSetupFuncs, fn)
+}
+
+func (a *App) addModel(value interface{}) {
+	a.models = append(a.models, value)
 }
 
 // shutdown releases resources on application shutdown

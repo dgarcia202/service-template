@@ -6,4 +6,5 @@
 * MongoDB support?
 * Service discovery?
 * Centralized configuration?
+* Authentication?
 

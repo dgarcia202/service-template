@@ -14,8 +14,10 @@ import (
 
 func startUp(cmd *cobra.Command, args []string) {
 
-	log.Trace("Setting up logging artifacts")
 	logging.SetupLogger()
+	log.Info("Starting service...")
+
+	dumpConfiguration()
 
 	log.Trace("Creating Gin engine")
 	std.ginEngine = gin.Default()
@@ -25,26 +27,41 @@ func startUp(cmd *cobra.Command, args []string) {
 
 	log.Trace("Adding custom routes")
 	fnCount := 0
-	for _, fn := range std.routeSetupFuncs {
+	for _, fn := range std.httpSetupFuncs {
 		log.Trace("Executing 'SetupRoutes' function")
 		fn(std.ginEngine)
 		fnCount++
 	}
 	log.Trace(fnCount, " custom route functions processed")
 
-	db, err := gorm.Open("sqlite3", "temp/test.db")
+	// start relational database
+	db, err := gorm.Open(viper.GetString("dbdialect"), viper.GetString("dbconnectionstring"))
 	if err != nil {
-		log.Fatal("failed to connect database: ", err)
+		log.Fatal("Failed to connect database: ", err)
+	} else {
+		log.Info("Database connection successful")
+	}
+
+	if len(std.models) > 0 {
+		db.AutoMigrate(std.models...)
 	}
 
 	std.db = db
 
+	// start HTTP server
 	r := std.ginEngine
 	log.Trace("Adding default '/ping' route")
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
 
-	log.Info("Starting service...")
+	log.Info("Starting HTTP server at ", viper.GetString("address"), ":", viper.GetString("port"))
 	r.Run(fmt.Sprintf("%s:%s", viper.GetString("address"), viper.GetString("port")))
+}
+
+func dumpConfiguration() {
+	log.Trace("Config file used: ", viper.ConfigFileUsed())
+	for _, key := range viper.AllKeys() {
+		log.Trace("Config: ", key, " -> ", viper.GetString(key))
+	}
 }
