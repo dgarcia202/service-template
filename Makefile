@@ -14,7 +14,7 @@ all: $(TARGET)
 $(TARGET): $(SOURCES)
 	@$(SCRIPTS_DIR)build.sh $(TARGET) $(ENTRY_POINT)
 
-.PHONY: clean
-
 clean:
 	@rm -f $(TARGET)
+
+.PHONY: all clean

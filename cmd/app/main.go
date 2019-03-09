@@ -3,10 +3,19 @@ package main
 import (
 	"net/http"
 
-	"github.com/dgarcia202/service-template/pkg/app"
+	appfactory "github.com/dgarcia202/service-template/pkg/app"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/spf13/viper"
 )
+
+// Customer entity
+type Customer struct {
+	gorm.Model
+	Name      string
+	LegalName string
+}
 
 func setupRoutes(r *gin.Engine) {
 	r.GET("/hola", func(c *gin.Context) {
@@ -15,7 +24,7 @@ func setupRoutes(r *gin.Engine) {
 }
 
 func main() {
-	app := app.Instance()
+	app := appfactory.Instance()
 	app.ServiceName = "customers"
 	app.ShortDescription = "This is a dummy customers service"
 
