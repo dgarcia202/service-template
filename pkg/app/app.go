@@ -7,7 +7,6 @@ import (
 	"github.com/dgarcia202/service-template/internal/cmd"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	log "github.com/sirupsen/logrus"
 )
 
 // App represents the service
@@ -49,7 +48,6 @@ func (a *App) Run() {
 
 // SetupRoutes allows to modify routing configuration
 func (a *App) SetupRoutes(fn func(*gin.Engine)) {
-	log.Trace("Registering custom route config function")
 	a.routeSetupFuncs = append(a.routeSetupFuncs, fn)
 }
 
