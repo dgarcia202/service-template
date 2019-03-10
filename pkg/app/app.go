@@ -54,8 +54,3 @@ func (a *App) addHTTPSetup(fn HTTPSetupFunc) {
 func (a *App) addModel(value interface{}) {
 	a.models = append(a.models, value)
 }
-
-// shutdown releases resources on application shutdown
-func (a *App) shutdown() {
-	// Perform clean up
-}
