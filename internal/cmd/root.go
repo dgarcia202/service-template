@@ -55,17 +55,17 @@ func init() {
 		Only will log lines of the equal or above severity`)
 
 	rootCmd.PersistentFlags().String("dbdialect", "", "Database driver to use. Check GORM documentation for options")
-	rootCmd.PersistentFlags().String("dbconnectionstring", "", "Database connection string")
+	rootCmd.PersistentFlags().String("db", "", "Database connection string")
 
 	viper.BindPFlag("logfile", rootCmd.PersistentFlags().Lookup("logfile"))
 	viper.BindPFlag("loglevel", rootCmd.PersistentFlags().Lookup("loglevel"))
 	viper.BindPFlag("dbdialect", rootCmd.PersistentFlags().Lookup("dbdialect"))
-	viper.BindPFlag("dbconnectionstring", rootCmd.PersistentFlags().Lookup("dbconnectionstring"))
+	viper.BindPFlag("db", rootCmd.PersistentFlags().Lookup("db"))
 
 	viper.SetDefault("logfile", fmt.Sprintf("./%s.log", rootCmd.Use))
 	viper.SetDefault("loglevel", defaultLogLevel)
 	viper.SetDefault("dbdialect", "sqlite3")
-	viper.SetDefault("dbconnectionstring", "data.db")
+	viper.SetDefault("db", "data.db")
 }
 
 func initConfig() {

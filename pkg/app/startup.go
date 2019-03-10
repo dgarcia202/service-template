@@ -35,7 +35,7 @@ func startUp(cmd *cobra.Command, args []string) {
 	log.Trace(fnCount, " custom route functions processed")
 
 	// start relational database
-	db, err := gorm.Open(viper.GetString("dbdialect"), viper.GetString("dbconnectionstring"))
+	db, err := gorm.Open(viper.GetString("dbdialect"), viper.GetString("db"))
 	if err != nil {
 		log.Fatal("Failed to connect database: ", err)
 	} else {
