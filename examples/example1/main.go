@@ -5,15 +5,27 @@ import (
 
 	app "github.com/dgarcia202/service-template/pkg/app"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 // Customer entity
 type Customer struct {
-	gorm.Model
+	app.Model
 	Name      string
 	LegalName string
+	//Addresses []Address
+}
+
+// Address of a customer
+type Address struct {
+	app.Model
+	CustomerID   string
+	AddressLine1 string
+	AddressLine2 string
+	City         string
+	State        string
+	ZipCode      string
+	Country      string
 }
 
 type customerDto struct {
@@ -89,7 +101,7 @@ func main() {
 		for educational purposes`)
 
 	app.Version("0.0.1")
-	app.AddModel(&Customer{})
+	app.AddModels(&Customer{})
 	app.AddHTTPSetup(defineRoutes)
 	app.Run()
 }

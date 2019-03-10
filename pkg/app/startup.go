@@ -6,6 +6,7 @@ import (
 
 	"github.com/dgarcia202/service-template/internal/logging"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -42,9 +43,12 @@ func startUp(cmd *cobra.Command, args []string) {
 		log.Info("Database connection successful")
 	}
 
+	db.LogMode(true)
 	if len(std.models) > 0 {
 		db.AutoMigrate(std.models...)
 	}
+
+	db.Callback().Create().Before("gorm:create").Register("set_uuid_primary_key", setUUIDPrimaryKey)
 
 	std.db = db
 
@@ -63,5 +67,11 @@ func dumpConfiguration() {
 	log.Trace("Config file used: ", viper.ConfigFileUsed())
 	for _, key := range viper.AllKeys() {
 		log.Trace("Config: ", key, " -> ", viper.GetString(key))
+	}
+}
+
+func setUUIDPrimaryKey(scope *gorm.Scope) {
+	if scope.HasColumn("ID") {
+		scope.SetColumn("ID", uuid.New().String())
 	}
 }

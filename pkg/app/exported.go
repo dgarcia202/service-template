@@ -1,8 +1,21 @@
 package app
 
 import (
+	"time"
+
 	"github.com/jinzhu/gorm"
 )
+
+// Model base model definition, including fields `ID`, `CreatedAt`, `UpdatedAt`, `DeletedAt`, which could be embedded in your models
+//    type User struct {
+//      app.Model
+//    }
+type Model struct {
+	ID        string `gorm:"primary_key"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time `sql:"index"`
+}
 
 // ServiceName sets a short service name, avoid spaces
 func ServiceName(name string) {
@@ -29,9 +42,11 @@ func AddHTTPSetup(fn HTTPSetupFunc) {
 	std.addHTTPSetup(fn)
 }
 
-// AddModel sets an struct to be model for database migration
-func AddModel(value interface{}) {
-	std.addModel(value)
+// AddModels sets structs to be models for database migration
+func AddModels(values ...interface{}) {
+	for _, value := range values {
+		std.models = append(std.models, value)
+	}
 }
 
 // Db returns the used instance of the GORM Db object

@@ -61,6 +61,12 @@
 			"revisionTime": "2019-01-09T07:22:47Z"
 		},
 		{
+			"checksumSHA1": "Kh/EnzmngEgl6DxIndgpflFLm00=",
+			"path": "github.com/google/uuid",
+			"revision": "0cd6bf5da1e1c83f8b45653022c74f71af0538a4",
+			"revisionTime": "2019-02-27T21:05:49Z"
+		},
+		{
 			"checksumSHA1": "bWGI7DqWg6IdhfamV96OD+Esa+8=",
 			"path": "github.com/hashicorp/hcl",
 			"revision": "65a6292f0157eff210d03ed1bf6c59b190b8b906",

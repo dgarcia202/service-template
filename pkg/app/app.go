@@ -50,7 +50,3 @@ func (a *App) run() {
 func (a *App) addHTTPSetup(fn HTTPSetupFunc) {
 	a.httpSetupFuncs = append(a.httpSetupFuncs, fn)
 }
-
-func (a *App) addModel(value interface{}) {
-	a.models = append(a.models, value)
-}
