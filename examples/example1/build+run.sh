@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ENTRY_POINT=./examples/example1/main.go
+ENTRY_POINT=./examples/example1/
 SERVICE_NAME=customers
 OUPUT_DIR=./temp/
 

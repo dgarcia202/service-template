@@ -13,6 +13,5 @@
 
 ## Notes
 
-* try logger inside handlers
 * optimize app.Model for UUID fields etc. see whats best to store UUID in different dialects
 * try to redirect GORM log to main log
