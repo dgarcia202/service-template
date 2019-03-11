@@ -43,6 +43,7 @@ func startUp(cmd *cobra.Command, args []string) {
 		log.Info("Database connection successful")
 	}
 
+	db.SetLogger(&logging.GormLogger{})
 	db.LogMode(true)
 	if len(std.models) > 0 {
 		db.AutoMigrate(std.models...)

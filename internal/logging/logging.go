@@ -12,6 +12,19 @@ import (
 
 var usingFileSystem = false
 
+// GormLogger encapsulates logrus for use inside GORM
+type GormLogger struct{}
+
+// Print logs GORM infomation
+func (*GormLogger) Print(v ...interface{}) {
+	if v[0] == "sql" {
+		log.WithFields(log.Fields{"module": "gorm", "type": "sql"}).Print(v[3])
+	}
+	if v[0] == "log" {
+		log.WithFields(log.Fields{"module": "gorm", "type": "log"}).Print(v[2])
+	}
+}
+
 // SetupLogger configure logrus default logger according to loaded configuration
 func SetupLogger() {
 	log.SetFormatter(&log.TextFormatter{})
