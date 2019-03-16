@@ -11,6 +11,8 @@ func shutDown() {
 	fmt.Println()
 	log.Info("Shutting down service...")
 
+	std.deregisterConsulService()
+
 	log.Trace("Closing database connection")
 	err := std.db.Close()
 	if err != nil {

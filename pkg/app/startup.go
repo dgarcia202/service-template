@@ -60,6 +60,7 @@ func startUp(cmd *cobra.Command, args []string) {
 		c.String(http.StatusOK, "pong")
 	})
 
+	std.registerConsulService()
 	log.Info("Starting HTTP server at ", viper.GetString("address"), ":", viper.GetString("port"))
 	r.Run(fmt.Sprintf("%s:%s", viper.GetString("address"), viper.GetString("port")))
 }

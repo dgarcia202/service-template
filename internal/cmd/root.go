@@ -11,7 +11,7 @@ import (
 
 const (
 	defaultPort      = "8080"
-	defaultInterface = "0.0.0.0"
+	defaultInterface = "127.0.0.1"
 	defaultLogLevel  = "INFO"
 )
 
