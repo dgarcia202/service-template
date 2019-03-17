@@ -1,9 +1,11 @@
 package app
 
 import (
+	"fmt"
 	"os"
 	"os/signal"
 	"strconv"
+	"time"
 
 	"github.com/dgarcia202/service-template/internal/cmd"
 	"github.com/gin-gonic/gin"
@@ -25,6 +27,7 @@ type App struct {
 	longDescription  string
 	version          string
 	consulID         string
+	consulTTL        time.Duration
 
 	httpSetupFuncs []HTTPSetupFunc
 	models         []interface{}
@@ -38,12 +41,17 @@ var std = NewApp()
 
 // NewApp constructs a new App object
 func NewApp() *App {
+
 	c, err := consul.NewClient(consul.DefaultConfig())
 	if err != nil {
 		log.Fatal("Can't create a consul client")
 	}
 
-	return &App{consulAgent: c.Agent()}
+	duration, _ := time.ParseDuration("10s") // TODO: move this to a constant or config
+
+	return &App{
+		consulAgent: c.Agent(),
+		consulTTL:   duration}
 }
 
 // runs the app either bringing up the service or other action like showing version number
@@ -86,7 +94,11 @@ func (a *App) registerConsulService() {
 		Name:    a.serviceName,
 		ID:      uuid.New().String(),
 		Address: viper.GetString("address"),
-		Port:    portInt}
+		Port:    portInt,
+		Check: &consul.AgentServiceCheck{
+			CheckID: uuid.New().String(),
+			Name:    fmt.Sprintf("checkTTL-%s", a.serviceName),
+			TTL:     a.consulTTL.String()}}
 
 	if err = a.consulAgent.ServiceRegister(serviceDef); err != nil {
 		log.Error("Can't register service: ", err.Error())
@@ -94,6 +106,8 @@ func (a *App) registerConsulService() {
 	}
 
 	a.consulID = serviceDef.ID
+
+	go a.heartbeat(serviceDef.Check.CheckID)
 }
 
 func (a *App) deregisterConsulService() {
@@ -101,11 +115,22 @@ func (a *App) deregisterConsulService() {
 	if len(a.consulID) == 0 {
 		log.Warn("No service ID available, skipping consul deregistration")
 		return
-	} else {
-		log.Debug("Deregistering service in consul")
 	}
+
+	log.Debug("Deregistering service in consul")
 
 	if err := a.consulAgent.ServiceDeregister(a.consulID); err != nil {
 		log.Error("Error while deregistering service with consul: ", err)
+	}
+}
+
+func (a *App) heartbeat(checkID string) {
+	log.Trace("Started heartbeat routine")
+	ticker := time.NewTicker(a.consulTTL / 2)
+	for range ticker.C {
+		log.Trace("Sending heartbeat")
+		if err := a.consulAgent.UpdateTTL(checkID, "Service heartbeat...", "pass"); err != nil {
+			log.Error("Error sending heartbeat: ", err.Error())
+		}
 	}
 }
